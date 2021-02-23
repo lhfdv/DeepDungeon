@@ -94,6 +94,43 @@ function Maze(rows, columns){
   }
 }
 
-window.onload = () => {
+function drawMaze(bitmap) {
+  let size = Math.floor(canvas.width / bitmap.length);
+  for (let i = 0; i < bitmap.length; ++i) {
+    for (let j = 0; j < bitmap[i].length; ++j) {
+      switch (bitmap[i][j]) {
+        case side['wall']:
+          ctx.fillStyle = 'black';
+          break;
+        case side['empty']:
+          ctx.fillStyle = 'white';
+          break;
+        case side['exit']:
+          ctx.fillStyle = '#26dd22';
+          break;
+      }
+      ctx.fillRect(i*size, j*size, size, size);
+    }
+  }
+}
 
+function keyDownHandler(event) {
+  switch (event.keyCode) {
+    case 39:
+      rightPressed = true;
+      break;
+    case 37:
+      leftPressed = true;
+      break;
+    case 40:
+      downPressed = true;
+      break;
+    case 38:
+      upPressed = true;
+      break;
+  }
+}
+
+window.onload = () => {
+  test1(0);
 };
