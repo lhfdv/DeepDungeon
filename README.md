@@ -1,6 +1,4 @@
-# Deep Maze
-
-![alt text](https://github.com/lhfdv/DeepMaze/blob/main/logo.png?raw=true)
+## ![alt text](https://github.com/lhfdv/DeepMaze/blob/main/logo.png?raw=true)
  
 A randomized maze game made using pure HTML, Javascript, CSS and Canvas.
 
