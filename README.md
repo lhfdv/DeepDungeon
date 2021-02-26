@@ -2,6 +2,10 @@
  
 A randomized maze game made using pure HTML, Javascript, CSS and Canvas.
 
+## Demo
+
+https://lhfdv.github.io/DeepMaze/
+
 ## Rules:
 
 Controls:
