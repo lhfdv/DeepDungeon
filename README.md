@@ -1,6 +1,6 @@
-# Deep Dungeon
+# Deep Maze
  
-A simple maze game made using pure HTML, Javascript, CSS and canvas.
+A randomized maze game made using pure HTML, Javascript, CSS and canvas.
 
 ## Sources:
 
