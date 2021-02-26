@@ -1,6 +1,6 @@
 # Deep Maze
  
-A randomized maze game made using pure HTML, Javascript, CSS and canvas.
+A randomized maze game made using pure HTML, Javascript, CSS and Canvas.
 
 ## Rules:
 
@@ -18,4 +18,4 @@ How to play:
 
 ## Sources:
 
-Audio: https://mixkit.co/
+Free audio provided by https://mixkit.co/
