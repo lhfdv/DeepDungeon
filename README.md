@@ -7,8 +7,8 @@ A randomized maze game made using pure HTML, Javascript, CSS and canvas.
 Controls:
 * ^  -  Move up
 * v  -  Move down
-* <  -  Move left
-* >  -  Move right
+* <--  -  Move left
+* -->  -  Move right
 * R  -  Restart the game
 * DEL - Dark Mode
 
