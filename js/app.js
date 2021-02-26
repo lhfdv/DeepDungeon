@@ -1,122 +1,132 @@
-//Defining canvas's context on Global
+//Opening audio setup and call function
 
-const canvas = document.getElementById('main');
+const audioOpener = new Audio('audio/opener.wav');
+audioOpener.play();
+
+// Canvas context setup
+
+const canvas = document.getElementById('app');
 const ctx = canvas.getContext('2d');
 
-//Setting canvas size
+// Canvas size setup
 
-const viewWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-const viewHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-const maxSize = Math.min(viewWidth, viewHeight);
+const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+const viewportHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+const maxSize = Math.min(viewportWidth, viewportHeight);
 const minSize = 101;
-let size = minSize;
-while(size + minSize <= maxSize){
-  size += minSize;
-}
-canvas.width = canvas.height = size;
 
-//Setting directions
+let size = minSize;
+
+while (size + minSize <= maxSize){
+  size += minSize;
+  canvas.width = canvas.height = size;
+}
+
+// Directions for walls and path
 
 const directions = {'N': [0, 1], 'S': [0, -1], 'W': [-1, 0], 'E': [1, 0]};
 const opposite = {'N': 'S', 'S': 'N', 'W': 'E', 'E': 'W'};
-const side = {'free': 0, 'wall': 1, 'stairs': 2};
+const side = {'path': 0, 'wall': 1, 'stairs': 2};
 
-//Setting individual cells of the map
+// Cell definition
 
-function Cell() {
-  this.sides = { };
+function Cell(){
+  this.visitedCell = false;
+  this.sides = {};
   for (let direction in directions){
     this.sides[direction] = side['wall'];
   }
 }
 
-//Setting the maze
+// Draw maze
 
 function Maze(rows, columns){
   this.board = [];
-  for (let i = 0; i < rows; ++i) {
+  for (let i = 0; i < rows; ++i){
     this.board.push([]);
-    for (let j = 0; j < columns; ++j) {
+    for (let j = 0; j < columns; ++j){
       this.board[i].push(new Cell());
     }
   }
 
   let maze = this;
 
-  (function generate(x = 0, y = 0) {
-    maze.board[x][y].visited = true;
+  (function generate(x = 0, y = 0){
+    maze.board[x][y].visitedCell = true;
     let directionKeys = [];
-    for (let key in directions) directionKeys.push(key);
+    for (let key in directions){
+      directionKeys.push(key);
+    }
     shuffleArray(directionKeys);
-    for (let key of directionKeys) {
+    for (let key of directionKeys){
       let dx = directions[key][0];
       let dy = directions[key][1];
-      if (isValidPosition(x + dx, y + dy, maze.board) === false ||
-        maze.board[x + dx][y + dy].visited === true)
-      {
+      if (isValidPosition(x + dx, y + dy, maze.board) === false || maze.board[x + dx][y + dy].visitedCell === true){
         continue;
       }
-      maze.board[x][y].sides[key] = side['free'];
-      maze.board[x + dx][y + dy].sides[opposite[key]] = side['free'];
+      maze.board[x][y].sides[key] = side['path'];
+      maze.board[x + dx][y + dy].sides[opposite[key]] = side['path'];
       generate(x + dx, y + dy);
     }
   })();
 
-  function mapCoord(coord) {
+  function mapCoord(coord){
     return 2*coord + 1;
   }
 
-  this.toMap = function() {
-    let map = [];
-    let mapRows = mapCoord(rows);
-    let mapcolumns = mapCoord(columns);
+  this.toMap = function(){
+    let mazemap = [];
+    let mazemapRows = mapCoord(rows);
+    let mazemapcolumns = mapCoord(columns);
 
-    for (let i = 0; i < mapRows; ++i) {
-      map.push([]);
-      for (let j = 0; j < mapcolumns; ++j) {
-        map[i].push(side['wall']);
+    for (let i = 0; i < mazemapRows; ++i) {
+      mazemap.push([]);
+      for (let j = 0; j < mazemapcolumns; ++j) {
+        mazemap[i].push(side['wall']);
       }
     }
 
     for (let i = 0; i < rows; ++i) {
       for (let j = 0; j < columns; ++j) {
-        map[mapCoord(i)][mapCoord(j)] = side['free'];
-        for (let d in directions) {
-          if (maze.board[i][j].sides[d] === side['wall']) continue;
+        mazemap[mapCoord(i)][mapCoord(j)] = side['path'];
+        for (let d in directions){
+          if (maze.board[i][j].sides[d] === side['wall']){
+            continue;
+          }
           let dx = mapCoord(i) + directions[d][0];
           let dy = mapCoord(j) + directions[d][1];
-          map[dx][dy] = side['free'];
+          mazemap[dx][dy] = side['path'];
         }
       }
     }
-    map[mapRows - 2][mapcolumns - 1] = side['stairs'];
-    return map;
+    mazemap[mazemapRows - 2][mazemapcolumns - 1] = side['stairs']; //Exit location
+    return mazemap;
   }
 }
 
-function drawMaze(map) {
-  let size = Math.floor(canvas.width / map.length);
-  for (let i = 0; i < map.length; ++i) {
-    for (let j = 0; j < map[i].length; ++j) {
-      switch (map[i][j]) {
+function drawMaze(mazemap){
+  let size = Math.floor(canvas.width / mazemap.length); //Size
+  for (let i = 0; i < mazemap.length; ++i){
+    for (let j = 0; j < mazemap[i].length; ++j){
+      switch (mazemap[i][j]){
         case side['wall']:
-          ctx.fillStyle = 'black';
+          ctx.fillStyle = 'grey';
           break;
-        case side['empty']:
+        case side['path']:
           ctx.fillStyle = 'white';
           break;
         case side['stairs']:
-          ctx.fillStyle = '#red';
+          ctx.fillStyle = 'red';
           break;
       }
-      ctx.fillRect(i*size, j*size, size, size);
+      ctx.fillRect(i*size, j*size, size, size); //Walls
     }
   }
 }
 
-//Shuffle 
+//Random generation
 
-function shuffle(array) {
+function shuffleArray(array){
   for (let i = array.length - 1; i > 0; --i) {
     let j = Math.floor(Math.random() * (i + 1));
     let temp = array[i];
@@ -125,17 +135,21 @@ function shuffle(array) {
   }
 }
 
-function isValidPosition(x, y, plane) {
+//Check valid position for generation
+
+function isValidPosition(x, y, plane){
   return (x >= 0 && x < plane.length && y >= 0 && y < plane[x].length);
 }
 
-var rightPressed = false;
-var leftPressed = false;
-var upPressed = false;
-var downPressed = false;
+//Player movement
 
-function keyDownHandler(event) {
-  switch (event.keyCode) {
+let rightPressed = false;
+let leftPressed = false;
+let upPressed = false;
+let downPressed = false;
+
+function keyDownHandler(event){
+  switch (event.keyCode){
     case 39:
       rightPressed = true;
       break;
@@ -151,9 +165,9 @@ function keyDownHandler(event) {
   }
 }
 
-function keyUpHandler() {
-  switch (event.keyCode) {
-    case 31:
+function keyUpHandler(){
+  switch (event.keyCode){
+    case 39:
       rightPressed = false;
       break;
     case 37:
@@ -171,68 +185,117 @@ function keyUpHandler() {
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
-function Player(map) {
-  this.pos = {x: 1, y: 1};
+//Player drawing
+
+function Player(mazemap){
+  this.pos = {x: 1, y: 1}; //Player initial position
   this.color = 'green';
+  const audioStep = new Audio('audio/step.wav'); //Step sound setup
 
-  let size = Math.floor(canvas.width / map.length);
+  let size = Math.floor(canvas.width / mazemap.length);
 
-  this.draw = function() {
+  this.draw = function(){
     ctx.fillStyle = this.color;
     ctx.fillRect(this.pos.x*size, this.pos.y*size, size, size);
   }
 
-  this.clear = function() {
-    ctx.clearRect(this.pos.x*size, this.pos.y*size, size, size);
+  //Clear and define walked path
+
+  this.clear = function(){
+    ctx.fillStyle = 'white';
+    ctx.fillRect(this.pos.x*size, this.pos.y*size, size, size);
   }
 
-  this.move = function(dir) {
-    let dx = this.pos.x + directions[dir][0];
-    let dy = this.pos.y + directions[dir][1];
-    if (isValidPosition(dx, dy, map) && map[dx][dy] !== side['wall']) {
+  this.move = function(direction){
+    let dx = this.pos.x + directions[direction][0];
+    let dy = this.pos.y + directions[direction][1];
+    if (isValidPosition(dx, dy, mazemap) && mazemap[dx][dy] !== side['wall']) {
       this.clear();
       this.pos.x = dx;
       this.pos.y = dy;
       this.draw();
+      audioStep.play();
     }
   }
 }
 
-const maze = new Maze(32, 32);  //Change map size
-const map = maze.toMap();
-const player = new Player(map);
+const maze = new Maze(8, 8); // Change size
+const mazemap = maze.toMap();
+const player = new Player(mazemap);
 
 //FPS = Frames per Second and FMT = Frame Minimum Time
-const FPS = 10;
-const FMT = (1000/60) * (60/FPS) - (1000/60) * 0.5;
-var lastFrameTime = 0;
+//Setting FPS for the game
+const FPS = 7;
+const FMT = (1000/60) * (60 / FPS) - (1000/60) * 0.5;
+let lastFrameTime = 0;
 
-drawMaze(map);
-player.draw();
+drawMaze(mazemap);
 
-function main(time) {
+player.draw(); //Start the game with the player
+
+//Main function
+
+function app(time){
   if (time - lastFrameTime < FMT) {
-    requestAnimationFrame(main);
+    requestAnimationFrame(app);
     return;
   }
 
   if (rightPressed){
-    player.move('E')
-  } else if (leftPressed){
+    player.move('E');
+  } else if(leftPressed){
     player.move('W');
-  } else if (upPressed){
+  } else if(upPressed){
     player.move('S');
-  } else if (downPressed){
+  } else if(downPressed){
     player.move('N');
-  }
+  } 
 
-  if (map[player.pos.x][player.pos.y] === side['exit']) {
-    window.alert('You found the exit');
+  //Winning condition and event
+
+  if(mazemap[player.pos.x][player.pos.y] === side['stairs']) {
+    const audioWin = new Audio('audio/win.wav');
+    audioWin.play();
+    document.getElementById('win').style.display = 'block';
+    document.getElementById('win').innerHTML = 'You WIN!';
     return;
   }
 
   lastFrameTime = time;
-  requestAnimationFrame(main);
+
+  requestAnimationFrame(app);
 }
 
-requestAnimationFrame(main);
+requestAnimationFrame(app);
+
+//Dark Mode
+
+function darkMode(){
+  let element = document.body;
+  element.classList.toggle("dark-mode");
+}
+
+//Reload page
+
+document.addEventListener('keyup', function(e){
+  if(e.keyCode == 82)
+    window.location.reload();
+});
+
+//Activate Dark Mode
+
+document.addEventListener('keyup', function(e){
+  if(e.keyCode == 46)
+    darkMode();
+});
+
+//Broken countdown
+
+var initialTime = new Date();
+function updateTimer(){
+    if(new Date() - initialTime > (1000 * 1000 * 60 * 3) ) {
+        document.getElementById('clock').innerHTML = formatTime();
+        setTimeout(updateTimer, 1000);    
+    }
+}
+updateTimer();
