@@ -25,6 +25,7 @@ How to play:
 * Timer is not working
 * Missing losing condition
 * Win block is not align properly on github.io
+* Step sounds don't align properly with every step
 
 ## Sources
 
