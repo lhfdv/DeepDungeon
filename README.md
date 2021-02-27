@@ -1,4 +1,4 @@
-## ![alt text](https://github.com/lhfdv/DeepMaze/blob/main/logo.png?raw=true)
+## ![alt text](https://github.com/lhfdv/DeepMaze/blob/main/img/logo.png?raw=true)
  
 A randomized maze game made using pure HTML, Javascript, CSS and Canvas.
 
@@ -23,9 +23,9 @@ How to play:
 ## Known Issues :beetle:
 
 * Timer is not working
-* Missing losing condition
-* Win block is not align properly on github.io
-* Step sounds don't align properly with every step
+* No losing condition set
+* Winning and lossing message blocks are not aligned properly
+* The game doesn't always start with the opening sound file
 
 ## Sources :books:
 
