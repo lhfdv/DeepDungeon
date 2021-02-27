@@ -33,6 +33,7 @@ html{
   margin-left: auto;
   margin-right: auto;
   width: 350px;
+  right: -321%;
   text-align: center;
   display: none;
   background-color: rgba(189, 192, 15, 0.589);

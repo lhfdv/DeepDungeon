@@ -257,7 +257,7 @@ function app(time){
     const audioWin = new Audio('audio/win.wav');
     audioWin.play();
     document.getElementById('win').style.display = 'block';
-    document.getElementById('win').innerHTML = 'You WIN!';
+    document.getElementById('win').innerHTML = 'You WIN! <br> Press R to start a new game';
     return;
   }
 
