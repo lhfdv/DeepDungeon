@@ -13,7 +13,7 @@ const ctx = canvas.getContext('2d');
 const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 const viewportHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 const maxSize = Math.min(viewportWidth, viewportHeight);
-const minSize = 101;
+const minSize = 200;
 
 let size = minSize;
 
@@ -289,13 +289,4 @@ document.addEventListener('keyup', function(e){
     darkMode();
 });
 
-//Broken countdown
 
-var initialTime = new Date();
-function updateTimer(){
-    if(new Date() - initialTime > (1000 * 1000 * 60 * 3) ) {
-        document.getElementById('clock').innerHTML = formatTime();
-        setTimeout(updateTimer, 1000);    
-    }
-}
-updateTimer();

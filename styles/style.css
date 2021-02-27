@@ -1,6 +1,7 @@
-body{
+html{
   padding: 25px;
 }
+
 
 .dark-mode{
   background-color: black;
@@ -12,11 +13,6 @@ body{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-#canvas{
-  width: 100%;
-  height: 100%;
 }
 
 #menu{
@@ -34,10 +30,9 @@ body{
 
 #win{
   position: absolute;
-  width: 250px;
-  top: 30%;
-  left: 50%;
-  margin-left: -123px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 350px;
   text-align: center;
   display: none;
   background-color: rgba(189, 192, 15, 0.589);
@@ -46,9 +41,34 @@ body{
   font-size: 80px;
 }
 
+#lose{
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  width: 350px;
+  text-align: center;
+  display: none;
+  background-color: rgba(243, 41, 22, 0.589);
+  padding: 6px;
+  color: rgb(22, 20, 20);
+  font-size: 80px;
+}
+
+#clock{
+  position: absolute;
+  width: 250px;
+  top: 15%;
+  left: 2.8%;
+  text-align: center;
+  background-color: rgba(0,0,0,0.4);
+  padding: 3px;
+  color: white;
+  font-size: 20px;
+}
+
 .title{
   position: relative;
-  font-size: 50px;
+  font-size: 73px;
   font-family: arial;
   letter-spacing: 3px;
   color:rgb(192, 192, 192);
@@ -59,7 +79,7 @@ body{
 
 .title::after {
   content: "DEEP MAZE";
-  font-size: 50px;
+  font-size: 73px;
   letter-spacing: 3px;
   font-family: arial;
   position: absolute;
