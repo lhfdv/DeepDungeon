@@ -23,9 +23,9 @@ How to play:
 ## Known Issues :beetle:
 
 * Timer is not working
-* Missing losing condition
-* Win block is not align properly on github.io
-* Step sounds don't align properly with every step
+* No losing condition set
+* Winning and lossing message blocks are not aligned properly
+* The game doesn't always start with the opening sound file
 
 ## Sources :books:
 
