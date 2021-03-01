@@ -12,13 +12,13 @@ const ctx = canvas.getContext('2d');
 
 const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 const viewportHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-const maxSize = Math.min(viewportWidth, viewportHeight);
-const minSize = 200;
+const maximumSize = Math.min(viewportWidth, viewportHeight);
+const minimumSize = 200;
 
-let size = minSize;
+let size = minimumSize;
 
-while (size + minSize <= maxSize){
-  size += minSize;
+while (size + minimumSize <= maximumSize){
+  size += minimumSize;
   canvas.width = canvas.height = size;
 }
 
@@ -38,10 +38,22 @@ function Cell(){
   }
 }
 
+//Shuffle function
+
+function shuffleArray(array){
+  for(let i = array.length - 1; i > 0; --i) {
+    let j = Math.floor(Math.random() * (i + 1));
+    let temporary = array[i];
+    array[i] = array[j];
+    array[j] = temporary;
+  }
+}
+
 // Draw maze
 
 function Maze(rows, columns){
   this.board = [];
+  
   for (let i = 0; i < rows; ++i){
     this.board.push([]);
     for (let j = 0; j < columns; ++j){
@@ -49,19 +61,26 @@ function Maze(rows, columns){
     }
   }
 
+  //Reference back to Maze function
+
   let maze = this;
+
+  //Immediately-Invoked Function Expression (IIFE)
 
   (function generate(x = 0, y = 0){
     maze.board[x][y].visitedCell = true;
     let directionKeys = [];
+
     for (let key in directions){
       directionKeys.push(key);
     }
+
     shuffleArray(directionKeys);
+
     for (let key of directionKeys){
       let dx = directions[key][0];
       let dy = directions[key][1];
-      if (isValidPosition(x + dx, y + dy, maze.board) === false || maze.board[x + dx][y + dy].visitedCell === true){
+      if(isValidPosition(x + dx, y + dy, maze.board) === false || maze.board[x + dx][y + dy].visitedCell === true){
         continue;
       }
       maze.board[x][y].sides[key] = side['path'];
@@ -79,27 +98,29 @@ function Maze(rows, columns){
     let mazemapRows = mapCoord(rows);
     let mazemapcolumns = mapCoord(columns);
 
-    for (let i = 0; i < mazemapRows; ++i) {
+    for (let i = 0; i < mazemapRows; ++i){
       mazemap.push([]);
-      for (let j = 0; j < mazemapcolumns; ++j) {
+      for (let j = 0; j < mazemapcolumns; ++j){
         mazemap[i].push(side['wall']);
       }
     }
 
-    for (let i = 0; i < rows; ++i) {
-      for (let j = 0; j < columns; ++j) {
+    for (let i = 0; i < rows; ++i){
+      for( let j = 0; j < columns; ++j){
         mazemap[mapCoord(i)][mapCoord(j)] = side['path'];
-        for (let d in directions){
-          if (maze.board[i][j].sides[d] === side['wall']){
+        for (let direction in directions){
+          if(maze.board[i][j].sides[direction] === side['wall']){
             continue;
           }
-          let dx = mapCoord(i) + directions[d][0];
-          let dy = mapCoord(j) + directions[d][1];
+          let dx = mapCoord(i) + directions[direction][0];
+          let dy = mapCoord(j) + directions[direction][1];
           mazemap[dx][dy] = side['path'];
         }
       }
     }
+
     mazemap[mazemapRows - 2][mazemapcolumns - 1] = side['stairs']; //Exit location
+    
     return mazemap;
   }
 }
@@ -124,21 +145,10 @@ function drawMaze(mazemap){
   }
 }
 
-//Random generation
-
-function shuffleArray(array){
-  for (let i = array.length - 1; i > 0; --i) {
-    let j = Math.floor(Math.random() * (i + 1));
-    let temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-}
-
 //Check valid position for generation
 
-function isValidPosition(x, y, plane){
-  return (x >= 0 && x < plane.length && y >= 0 && y < plane[x].length);
+function isValidPosition(x, y, board){
+  return (x >= 0 && x < board.length && y >= 0 && y < board[x].length);
 }
 
 //Player movement
@@ -148,7 +158,7 @@ let leftPressed = false;
 let upPressed = false;
 let downPressed = false;
 
-function keyDownHandler(event){
+function keyDown(event){
   switch (event.keyCode){
     case 39:
       rightPressed = true;
@@ -165,7 +175,7 @@ function keyDownHandler(event){
   }
 }
 
-function keyUpHandler(){
+function keyUp(){
   switch (event.keyCode){
     case 39:
       rightPressed = false;
@@ -182,8 +192,8 @@ function keyUpHandler(){
   }
 }
 
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
+document.addEventListener('keydown', keyDown, false);
+document.addEventListener('keyup', keyUp, false);
 
 //Player drawing
 
