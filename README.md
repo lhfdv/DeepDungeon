@@ -23,9 +23,7 @@ How to play:
 ## Known Issues :beetle:
 
 * Timer is not working
-* No losing condition set
-* Winning and lossing message blocks are not aligned properly
-* The game doesn't always start with the opening sound file
+* No losing condition has been properly set
 
 ## Sources :books:
 
